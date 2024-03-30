@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"net/url"
 	"time"
 
@@ -21,26 +22,26 @@ type PingResult struct {
 	StdDevRtt             time.Duration
 }
 
-func PingUrlWithTimeOutAndCount(urlS string, count int, maxTimeOut time.Duration) (*PingResult, error) {
+func pingUrlWithTimeOutAndCount(urlS string, count int, maxTimeOut time.Duration) error {
 
 	parsedURL, err := url.Parse(urlS)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	pinger, err := ping.NewPinger(parsedURL.Hostname())
 	if err != nil {
-		return nil, err
+		return err
 	}
 	pinger.Timeout = maxTimeOut // на все пинги, не зависимо от количества
 	pinger.Count = count
 	err = pinger.Run()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	stats := pinger.Statistics()
 
-	result := &PingResult{
+	/*	result := &PingResult{
 		IPAddr:                stats.IPAddr.String(),
 		PacketsRecv:           stats.PacketsRecv,
 		PacketsSent:           stats.PacketsSent,
@@ -52,7 +53,18 @@ func PingUrlWithTimeOutAndCount(urlS string, count int, maxTimeOut time.Duration
 		MaxRtt:                stats.MaxRtt,
 		AvgRtt:                stats.AvgRtt,
 		StdDevRtt:             stats.StdDevRtt,
-	}
+	}*/
 
-	return result, nil
+	fmt.Println("Ping Result:")
+	fmt.Printf("IP Address: %s\n", stats.IPAddr)
+	fmt.Printf("Packets Received: %d\n", stats.PacketsRecv)
+	fmt.Printf("Packets Sent: %d\n", stats.PacketsSent)
+	fmt.Printf("Packet Loss: %.2f%%\n", stats.PacketLoss)
+	fmt.Printf("Address: %s\n", stats.Addr)
+	fmt.Printf("Minimum RTT: %s\n", stats.MinRtt)
+	fmt.Printf("Maximum RTT: %s\n", stats.MaxRtt)
+	fmt.Printf("Average RTT: %s\n", stats.AvgRtt)
+	fmt.Printf("Standard Deviation RTT: %s\n", stats.StdDevRtt)
+
+	return nil
 }

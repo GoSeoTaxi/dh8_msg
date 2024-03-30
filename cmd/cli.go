@@ -9,14 +9,13 @@ import (
 	"github.com/fatih/color"
 )
 
-func RunService(ctx context.Context) {
+func RunService(ctx context.Context) error {
 	cfg, err := config.NewConfig()
 	if err != nil {
 		log.Fatalf("parcing config err = %v", err)
 	}
 
-	log.Println(color.HiRedString("Starting..."))
+	log.Printf(color.HiRedString("Starting version %v"), cfg.AppVersion)
 
-	client.StartWorker(ctx, cfg)
-
+	return client.StartWorker(ctx, cfg)
 }

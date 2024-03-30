@@ -12,7 +12,12 @@ type Config struct {
 
 	AppVersion string // `env:"APP_VER"`
 	URL        string `env:"URL"`
-	Resp       string `env:"RESP"`
+	CheckPing  bool
+	URLFile    string `env:"URL_FILE"`
+	Sha256     string `env:"SHA256"`
+	CheckFile  bool
+	URLLogin   string `env:"URL_LOGIN"`
+	CheckLogin bool
 }
 
 func NewConfig() (*Config, error) {
@@ -26,7 +31,23 @@ func NewConfig() (*Config, error) {
 	cfg.AppName = os.Getenv("APP_NAME")
 	cfg.AppVersion = "0.0.1" // os.Getenv("APP_VER")
 	cfg.URL = os.Getenv("URL")
-	cfg.Resp = os.Getenv("RESP")
+	checkPing := os.Getenv("CHECK_PING")
+	if checkPing == "true" {
+		cfg.CheckPing = true
+	}
+
+	cfg.URLFile = os.Getenv("URL_FILE")
+	cfg.Sha256 = os.Getenv("SHA256")
+	checkFile := os.Getenv("CHECK_FILE")
+	if checkFile == "true" {
+		cfg.CheckFile = true
+	}
+
+	cfg.URLLogin = os.Getenv("URL_LOGIN")
+	checkLogin := os.Getenv("CHECK_LOGIN")
+	if checkLogin == "true" {
+		cfg.CheckLogin = true
+	}
 
 	return &cfg, nil
 }

@@ -6,16 +6,23 @@ import (
 	"time"
 
 	"github.com/GoSeoTaxi/dh8_msg/internal/config"
-	"github.com/GoSeoTaxi/dh8_msg/internal/sender"
 )
 
-func StartWorker(ctx context.Context, cfg *config.Config) {
+func StartWorker(ctx context.Context, cfg *config.Config) (err error) {
 
-	res, err := PingUrlWithTimeOutAndCount(cfg.URL, 10, time.Duration(5*time.Second))
-	if err != nil {
-		sender.SendResp(cfg)
+	if cfg.CheckPing {
+		err = pingUrlWithTimeOutAndCount(cfg.URL, 10, time.Duration(5*time.Second))
+		if err != nil {
+			log.Println(err)
+		}
 	}
-	// Тут нужен какой-то конвертер для отправки результатов
-	log.Println(res)
+	if cfg.CheckFile {
+		err = checkFile(cfg.URLFile, cfg.Sha256)
+	}
 
+	if cfg.CheckLogin {
+		err = checkLogin(cfg.URLLogin)
+	}
+
+	return err
 }

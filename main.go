@@ -2,18 +2,19 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"os"
 
 	"github.com/GoSeoTaxi/dh8_msg/cmd"
-	"github.com/fatih/color"
 )
 
 func main() {
-	fmt.Println(color.HiMagentaString("Preparing..."))
+	// fmt.Println(color.HiMagentaString("Preparing..."))
 	ctx, cancel := context.WithCancel(context.Background())
 
-	cmd.RunService(ctx)
-
-	fmt.Println(color.HiRedString("Shutting down..."))
+	err := cmd.RunService(ctx)
+	if err != nil {
+		os.Exit(1)
+	}
 	cancel()
+	os.Exit(0)
 }
